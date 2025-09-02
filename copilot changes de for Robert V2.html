@@ -1,0 +1,594 @@
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Harold’s Travel — From Questionnaire to Adventure — AI Does the Rest</title>
+  <style>
+    :root {
+      /* Wild West palette */
+      --primary: #9c4a1a;       /* saddle brown */
+      --secondary: #cf7d32;     /* burnt orange */
+      --accent: #2f4f4f;        /* deep sage/teal */
+      --sand: #f4e6d4;          /* desert sand */
+      --sunset: #e0a571;        /* sunset peach */
+      --ink: #2b2b2b;           /* dark text */
+      --light: #fffaf2;         /* soft parchment */
+      --shadow: 0 8px 18px rgba(0,0,0,0.08);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+      font-family: ui-rounded, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, var(--sand) 0%, #fff 60%);
+      color: var(--ink);
+      line-height: 1.6;
+      font-size: 18px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background: radial-gradient(1200px 400px at 50% -50%, var(--sunset), var(--secondary));
+      color: #fff;
+      padding: 48px 20px;
+      text-align: center;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    .intro, .section, .interactive-section {
+      background: var(--light);
+      padding: 22px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      border: 1px solid rgba(156, 74, 26, 0.08);
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px dashed var(--secondary);
+    }
+
+    h3 { color: var(--accent); margin: 14px 0 10px; }
+    p { margin-bottom: 12px; }
+
+    .prompt-box, pre.code {
+      background: #fff;
+      border: 2px dashed rgba(156, 74, 26, 0.25);
+      padding: 16px;
+      border-radius: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      white-space: pre-wrap;
+      font-size: 15px;
+      color: #2a2a2a;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.2px;
+    }
+
+    .help {
+      display: block;
+      font-size: 14px;
+      color: #6b6b6b;
+      margin-top: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 12px;
+      border: 1.5px solid #dfd1bf;
+      border-radius: 10px;
+      font-size: 17px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(207, 125, 50, 0.18);
+    }
+
+    textarea.form-control { min-height: 100px; resize: vertical; }
+
+    .row {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      transition: transform 0.05s ease, background-color 0.2s ease;
+    }
+    .btn:hover { background: #7f3a13; }
+    .btn:active { transform: translateY(1px); }
+
+    .btn-secondary { background: var(--accent); }
+    .btn-secondary:hover { background: #233e3e; }
+
+    .btn-accent { background: var(--secondary); color: #fff; }
+    .btn-accent:hover { background: #b56a2a; }
+
+    .action-buttons {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;
+    }
+
+    .plan-output {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid #eadbca;
+    }
+
+    .output-section { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #f0e4d4; }
+    .output-section:last-child { border-bottom: none; }
+
+    .tip {
+      background-color: #fff6ea;
+      border-left: 5px solid var(--secondary);
+      padding: 14px;
+      border-radius: 0 10px 10px 0;
+      margin: 12px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px;
+      margin-top: 20px;
+      color: #6e6256;
+      font-size: 0.95rem;
+    }
+
+    /* Accessibility tweaks for older users */
+    @media (min-width: 0px) {
+      :focus-visible { outline: 3px dashed var(--secondary); outline-offset: 3px; }
+      .btn { min-width: 220px; }
+      label { cursor: text; }
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Harold’s Travel</h1>
+    <p class="subtitle">From Questionnaire to Adventure — AI Does the Rest</p>
+  </header>
+
+  <div class="container">
+    <section class="intro">
+      <h2>Welcome</h2>
+      <p>This simple page helps you plan a great road trip. Fill in what you know, click a button, and you’ll get a ready‑to‑copy request you can paste into the AI of your choice. The AI will ask you a few easy questions and then build your day‑by‑day plan.</p>
+      <div class="tip">
+        <strong>Friendly tip:</strong> Don’t worry about being perfect. Just put your best guess. You can always change it later.
+      </div>
+    </section>
+
+    <!-- Unified Planning Section -->
+    <section class="interactive-section">
+      <h2>Plan your trip</h2>
+      <p>Start here. You can save, print, or generate your AI‑ready request anytime.</p>
+
+      <div class="planning-form">
+        <div class="row">
+          <div class="form-group">
+            <label for="start-location">Starting point</label>
+            <input id="start-location" class="form-control" placeholder="Charleston, SC"/>
+            <span class="help">Where you’ll begin the trip.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="trip-dates">Trip dates</label>
+            <input id="trip-dates" class="form-control" placeholder="July 10–30, 2025"/>
+            <span class="help">Approximate dates are fine.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="destinations">Destinations & route (in order)</label>
+          <textarea id="destinations" class="form-control" placeholder="Memphis → Oklahoma City → Albuquerque → Grand Canyon → Zion → Yellowstone → Denver → home"></textarea>
+          <span class="help">List stops in order. If you’re unsure, list the must‑sees.</span>
+        </div>
+
+        <div class="row">
+          <div class="form-group">
+            <label for="must-sees">Must‑see parks/cities</label>
+            <input id="must-sees" class="form-control" placeholder="Grand Canyon, Zion, Yellowstone"/>
+            <span class="help">Your top 2–5 priorities.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="accommodations">Accommodation preferences</label>
+            <input id="accommodations" class="form-control" placeholder="Mid‑range hotels, no hostels, pet‑friendly if possible"/>
+            <span class="help">Examples: mid‑range hotels, chain motels, cabins, Airbnb.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="activities">Preferred activities</label>
+          <textarea id="activities" class="form-control" placeholder="Scenic drives, easy to moderate hikes, museums, local diners, photography"></textarea>
+          <span class="help">What you enjoy doing on trips.</span>
+        </div>
+
+        <div class="row">
+          <div class="form-group">
+            <label for="budget">Budget estimate</label>
+            <input id="budget" class="form-control" placeholder="$3,500–$5,000 total"/>
+            <span class="help">A rough range is fine.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="hours-per-day">Max driving hours per day</label>
+            <input id="hours-per-day" class="form-control" placeholder="4–6 hours"/>
+            <span class="help">How long you’re comfortable in the car per day.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="miles-per-day">Max miles per day (optional)</label>
+            <input id="miles-per-day" class="form-control" placeholder="300–350 miles"/>
+            <span class="help">Leave blank if you’re not sure.</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group">
+            <label for="pace">Preferred pace</label>
+            <input id="pace" class="form-control" placeholder="Leisurely with a few key stops"/>
+            <span class="help">Examples: fast‑paced with many stops, or leisurely with fewer stops.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="rest-frequency">Rest days</label>
+            <input id="rest-frequency" class="form-control" placeholder="One easy/rest day every 3–4 days"/>
+            <span class="help">If you want built‑in “easy days.”</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="special-notes">Special notes & requirements</label>
+          <textarea id="special-notes" class="form-control" placeholder="Avoid high altitudes if possible; bad knees—prefer shorter hikes; bring cooler for picnic lunches"></textarea>
+          <span class="help">Dietary needs, mobility, tolls, scenic routes, pets, etc.</span>
+        </div>
+
+        <!-- Gentle, optional questionnaire to fine‑tune preferences -->
+        <div class="section" style="margin-top: 18px;">
+          <h3>Optional: Fine‑tune your preferences</h3>
+          <div class="row">
+            <div class="form-group">
+              <label for="q1">Favorite scenery</label>
+              <input id="q1" class="form-control" placeholder="Mountains, deserts, red rock canyons, forests, coastlines"/>
+            </div>
+            <div class="form-group">
+              <label for="q4">Lodging type</label>
+              <input id="q4" class="form-control" placeholder="Hotels only, no camping; ground‑floor if possible"/>
+            </div>
+            <div class="form-group">
+              <label for="q5">Trip priority</label>
+              <input id="q5" class="form-control" placeholder="Relaxation and scenery, with a bit of photography"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn" onclick="savePlan()">Save</button>
+          <button class="btn btn-secondary" onclick="generatePlan()">Show printable summary</button>
+          <button class="btn btn-accent" onclick="generateAIReadyPrompt()">Generate AI‑ready request</button>
+        </div>
+      </div>
+
+      <!-- Printable human summary -->
+      <div class="plan-output" id="plan-output" style="display:none;">
+        <h3>Trip summary (printable)</h3>
+
+        <div class="output-section">
+          <strong>Trip dates:</strong>
+          <div id="output-dates"></div>
+        </div>
+        <div class="output-section">
+          <strong>Starting point:</strong>
+          <div id="output-start"></div>
+        </div>
+        <div class="output-section">
+          <strong>Destinations & route:</strong>
+          <div id="output-destinations"></div>
+        </div>
+        <div class="output-section">
+          <strong>Must‑see parks/cities:</strong>
+          <div id="output-mustsees"></div>
+        </div>
+        <div class="output-section">
+          <strong>Accommodations:</strong>
+          <div id="output-accommodations"></div>
+        </div>
+        <div class="output-section">
+          <strong>Activities:</strong>
+          <div id="output-activities"></div>
+        </div>
+        <div class="output-section">
+          <strong>Budget:</strong>
+          <div id="output-budget"></div>
+        </div>
+        <div class="output-section">
+          <strong>Driving comfort:</strong>
+          <div id="output-driving"></div>
+        </div>
+        <div class="output-section">
+          <strong>Pace & rest days:</strong>
+          <div id="output-pace"></div>
+        </div>
+        <div class="output-section">
+          <strong>Special notes:</strong>
+          <div id="output-notes"></div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn" onclick="printPlan()">Print</button>
+          <button class="btn btn-secondary" onclick="clearPlan()">Clear</button>
+        </div>
+      </div>
+
+      <!-- AI‑ready prompt output -->
+      <div class="plan-output" id="prompt-output" style="display:none;">
+        <h3>AI‑ready request</h3>
+        <div class="prompt-box" id="ai-ready-prompt"></div>
+        <div class="action-buttons">
+          <button class="btn" onclick="copyPrompt()">Copy for ChatGPT/Claude</button>
+          <button class="btn btn-secondary" onclick="printPrompt()">Print this request</button>
+        </div>
+        <div class="tip">
+          <strong>What to do next:</strong> Click “Copy,” paste into your AI chat, answer its short questions, and you’ll get your custom itinerary.
+        </div>
+      </div>
+    </section>
+
+    <!-- Helpful follow‑ups -->
+    <section class="section">
+      <h2>Easy follow‑ups you can paste</h2>
+      <div class="row">
+        <div class="prompt-box">Please make the route more scenic, favoring national parks and overlooks.</div>
+        <div class="prompt-box">Add one rest day after every two longer driving days.</div>
+        <div class="prompt-box">Suggest two budget hotel options within 30 minutes of the route for each stop.</div>
+        <div class="prompt-box">Swap one desert stop for a cooler mountain town with easy hikes.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Good to know</h2>
+      <div class="tip">
+        <strong>Verify details:</strong> For park reservations, entrance fees, and current hours, check the official websites.
+      </div>
+      <div class="tip">
+        <strong>Stay flexible:</strong> Treat any itinerary as a guide. Leave room for surprises, photo stops, and slow mornings.
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>Harold’s Travel — From Questionnaire to Adventure — AI Does the Rest</p>
+    <p>Built with care for friends (Robert & Julia), and anyone who loves a good road trip.</p>
+  </footer>
+
+  <script>
+    // Load saved data if available
+    document.addEventListener('DOMContentLoaded', function() {
+      const saved = localStorage.getItem('tripPlanV2');
+      if (!saved) return;
+      const plan = JSON.parse(saved);
+
+      const ids = [
+        'start-location','trip-dates','destinations','must-sees','accommodations',
+        'activities','budget','hours-per-day','miles-per-day','pace','rest-frequency',
+        'special-notes','q1','q4','q5'
+      ];
+      ids.forEach(id => { if (plan[id]) document.getElementById(id).value = plan[id]; });
+    });
+
+    // Save plan to local storage
+    function savePlan() {
+      const plan = collectPlan();
+      localStorage.setItem('tripPlanV2', JSON.stringify(plan));
+      alert('Saved! You can close this page and return later.');
+    }
+
+    function collectPlan() {
+      return {
+        'start-location': document.getElementById('start-location').value.trim(),
+        'trip-dates': document.getElementById('trip-dates').value.trim(),
+        'destinations': document.getElementById('destinations').value.trim(),
+        'must-sees': document.getElementById('must-sees').value.trim(),
+        'accommodations': document.getElementById('accommodations').value.trim(),
+        'activities': document.getElementById('activities').value.trim(),
+        'budget': document.getElementById('budget').value.trim(),
+        'hours-per-day': document.getElementById('hours-per-day').value.trim(),
+        'miles-per-day': document.getElementById('miles-per-day').value.trim(),
+        'pace': document.getElementById('pace').value.trim(),
+        'rest-frequency': document.getElementById('rest-frequency').value.trim(),
+        'special-notes': document.getElementById('special-notes').value.trim(),
+        // Optional fine‑tune
+        'q1': document.getElementById('q1').value.trim(),   // scenery
+        'q4': document.getElementById('q4').value.trim(),   // lodging type
+        'q5': document.getElementById('q5').value.trim()    // priority
+      };
+    }
+
+    // Printable summary (human‑readable)
+    function generatePlan() {
+      const p = collectPlan();
+      document.getElementById('output-dates').textContent = p['trip-dates'] || 'Not specified';
+      document.getElementById('output-start').textContent = p['start-location'] || 'Not specified';
+      document.getElementById('output-destinations').textContent = p['destinations'] || 'Not specified';
+      document.getElementById('output-mustsees').textContent = p['must-sees'] || 'Not specified';
+      document.getElementById('output-accommodations').textContent = (p['accommodations'] || p['q4'] || 'Not specified');
+      document.getElementById('output-activities').textContent = p['activities'] || 'Not specified';
+      document.getElementById('output-budget').textContent = p['budget'] || 'Not specified';
+
+      const drivingBits = [];
+      if (p['hours-per-day']) drivingBits.push(p['hours-per-day'] + ' hours/day');
+      if (p['miles-per-day']) drivingBits.push(p['miles-per-day'] + ' miles/day');
+      document.getElementById('output-driving').textContent = drivingBits.join(' • ') || 'Not specified';
+
+      const paceBits = [];
+      if (p['pace']) paceBits.push(p['pace']);
+      if (p['rest-frequency']) paceBits.push(p['rest-frequency']);
+      document.getElementById('output-pace').textContent = paceBits.join(' • ') || 'Not specified';
+
+      document.getElementById('output-notes').textContent = p['special-notes'] || 'None';
+
+      document.getElementById('plan-output').style.display = 'block';
+      document.getElementById('plan-output').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // AI‑ready prompt
+    function generateAIReadyPrompt() {
+      const p = collectPlan();
+
+      const hours = p['hours-per-day'] || '';
+      const miles = p['miles-per-day'] || '';
+      const scenery = p['q1'] || '';
+      const lodging = p['accommodations'] || p['q4'] || '';
+      const priority = p['q5'] || '';
+
+      const drivingTag = [
+        hours ? `MaxDrivingHoursPerDay=${hours}` : '',
+        miles ? `MaxMilesPerDay=${miles}` : ''
+      ].filter(Boolean).join('; ');
+
+      const metaTags = [
+        drivingTag ? `[DrivingLimits: ${drivingTag}]` : '',
+        p['pace'] ? `[Pace: ${p['pace']}]` : '',
+        p['rest-frequency'] ? `[RestDays: ${p['rest-frequency']}]` : '',
+        priority ? `[Priority: ${priority}]` : ''
+      ].filter(Boolean).join('\n');
+
+      const prompt = `
+You are a seasoned trip‑planning agent with years of experience creating custom road‑trip itineraries.
+Your role is to be proactive: ask concise clarifying questions (up to 5 at a time) before producing the plan.
+Use the details below to start, then refine the itinerary based on the traveler’s answers.
+
+## Traveler details
+- Starting point: ${p['start-location'] || 'Not specified'}
+- Trip dates: ${p['trip-dates'] || 'Not specified'}
+- Destinations & route: ${p['destinations'] || 'Not specified'}
+- Must‑see parks/cities: ${p['must-sees'] || 'Not specified'}
+- Preferred activities: ${p['activities'] || 'Not specified'}
+- Accommodation preferences: ${lodging || 'Not specified'}
+- Budget: ${p['budget'] || 'Not specified'}
+- Preferred scenery: ${scenery || 'Not specified'}
+- Special notes: ${p['special-notes'] || 'None'}
+
+${metaTags || ''}
+
+Please do the following:
+1) Ask any missing-but-important questions first (plain English, easy to answer).
+2) After I reply, produce a realistic day‑by‑day itinerary that:
+   - Respects my driving comfort (hours/miles) and includes occasional rest/easy days
+   - Lists driving time and distance between stops
+   - Recommends 1–2 lodging options within ~60 minutes of the route (mid‑range unless noted)
+   - Highlights must‑see attractions and scenic pull‑offs
+   - Suggests local dining (breakfast/lunch/dinner) with regional specialties
+   - Notes reservations or permits to book (parks, timed entries, popular trails)
+3) Then propose two quick variations (e.g., “more parks”, “more cities”) with pros/cons.
+      `.trim();
+
+      document.getElementById('ai-ready-prompt').textContent = prompt;
+      document.getElementById('prompt-output').style.display = 'block';
+      document.getElementById('prompt-output').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById('ai-ready-prompt').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied! Paste this into your AI chat.');
+      });
+    }
+
+    function printPrompt() {
+      const content = document.getElementById('prompt-output').innerHTML;
+      const original = document.body.innerHTML;
+      document.body.innerHTML = content;
+      window.print();
+      document.body.innerHTML = original;
+      location.reload();
+    }
+
+    // Print the summary
+    function printPlan() {
+      const content = document.getElementById('plan-output').innerHTML;
+      const original = document.body.innerHTML;
+      document.body.innerHTML = content;
+      window.print();
+      document.body.innerHTML = original;
+      location.reload();
+    }
+
+    // Clear all data
+    function clearPlan() {
+      if (!confirm('Are you sure you want to clear everything?')) return;
+      localStorage.removeItem('tripPlanV2');
+
+      const ids = [
+        'start-location','trip-dates','destinations','must-sees','accommodations',
+        'activities','budget','hours-per-day','miles-per-day','pace','rest-frequency',
+        'special-notes','q1','q4','q5'
+      ];
+      ids.forEach(id => { const el = document.getElementById(id); if (el) el.value=''; });
+
+      document.getElementById('plan-output').style.display = 'none';
+      document.getElementById('prompt-output').style.display = 'none';
+      alert('Cleared.');
+    }
+  </script>
+</body>
+</html>
+```
